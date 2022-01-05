@@ -75,7 +75,7 @@ def update_user_data(request):
     }
     validator = Validate()
     validation_result = validator.check(params, schema)
-    if validation_result['is_valid'] is False:
+    if not validation_result['is_valid']:
         return JsonResponse(validation_result['data'], status=422, safe=False)
 
     if user.email != params['email'] and User.objects.filter(email=params['email']).exists():
@@ -86,3 +86,25 @@ def update_user_data(request):
     user.save()
 
     return JsonResponse(generate_response_from_user(user))
+
+
+@login_required()
+def update_user_password(request):
+    user = request.user
+    params = json.loads(request.body.decode('utf-8'))
+    schema = {
+        'current_password': 'required',
+        'password': 'required|confirmed'
+    }
+    validator = Validate()
+    validation_result = validator.check(params, schema)
+    if not validation_result['is_valid']:
+        return JsonResponse(validation_result['data'], status=422, safe=False)
+
+    if not user.check_password(params['current_password']):
+        return JsonResponse({'errors': {'current_password': ['Obecne hasło jest niepoprawne']}}, status=422, safe=False)
+
+    user.set_password(params['password'])
+    user.save()
+
+    return JsonResponse({})
