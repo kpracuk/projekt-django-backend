@@ -2,6 +2,7 @@ import json
 from validation.validation import Validate
 from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from django.middleware.csrf import get_token
 from authentication.models import User
 from authentication.helpers.responses import generate_response_from_user
@@ -62,3 +63,26 @@ def register_user(request):
 def logout_user(request):
     logout(request)
     return JsonResponse({}, status=200)
+
+
+@login_required()
+def update_user_data(request):
+    user = request.user
+    params = json.loads(request.body.decode('utf-8'))
+    schema = {
+        'name': 'required',
+        'email': 'required|email'
+    }
+    validator = Validate()
+    validation_result = validator.check(params, schema)
+    if validation_result['is_valid'] is False:
+        return JsonResponse(validation_result['data'], status=422, safe=False)
+
+    if user.email != params['email'] and User.objects.filter(email=params['email']).exists():
+        return JsonResponse({'errors': {'email': ['Email jest już zajęty']}}, status=422, safe=False)
+
+    user.email = params['email']
+    user.username = params['name']
+    user.save()
+
+    return JsonResponse(generate_response_from_user(user))
