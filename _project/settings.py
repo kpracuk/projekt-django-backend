@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'corsheaders',
-    'shop_auth.apps.AuthConfig',
+    'authentication.apps.AuthConfig',
     'shop.apps.ShopConfig',
     'django_extensions',
     'django.contrib.auth',
@@ -95,25 +95,12 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-AUTH_USER_MODEL = 'shop_auth.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.shop_auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.shop_auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.shop_auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.shop_auth.password_validation.NumericPasswordValidator',
-    },
-]
+AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization

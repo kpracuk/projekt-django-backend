@@ -1,4 +1,4 @@
-from shop_auth.models import User
+from authentication.models import User
 
 
 def generate_response_from_user(user: User):

@@ -17,5 +17,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path('api/', include('shop.urls')),
-    path('auth/', include('shop_auth.urls'))
+    path('auth/', include('authentication.urls'))
 ]

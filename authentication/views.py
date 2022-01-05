@@ -3,8 +3,8 @@ from validation.validation import Validate
 from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.middleware.csrf import get_token
-from shop_auth.models import User
-from shop_auth.helpers.responses import generate_response_from_user
+from authentication.models import User
+from authentication.helpers.responses import generate_response_from_user
 
 
 def get_csrf_token(request):
