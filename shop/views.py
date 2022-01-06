@@ -71,5 +71,26 @@ def create_order(request):
     product.quantity = product.quantity - params['quantity']
     product.save()
 
-
     return JsonResponse(generate_response_from_order(order), safe=False)
+
+
+@require_http_methods(['PUT'])
+@login_required()
+def update_order_data(request, order_id):
+    order = Order.objects.get(pk=order_id)
+    if order is None:
+        return JsonResponse({}, status=404, safe=False)
+
+    params = json.loads(request.body.decode('utf-8'))
+    schema = {
+        'status': 'required'
+    }
+    validator = Validate()
+    validation_result = validator.check(params, schema)
+    if not validation_result['is_valid']:
+        return JsonResponse(validation_result['data'], status=422, safe=False)
+
+    order.status = params['status']
+    order.save()
+
+    return JsonResponse(generate_response_from_order(order))
